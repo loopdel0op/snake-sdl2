@@ -84,7 +84,7 @@ bool init() {
 	}
 
     // Load the background music file
-    backgroundMusic = Mix_LoadMUS("background.wav");
+    backgroundMusic = Mix_LoadMUS("./background/background.wav");
     if (backgroundMusic == nullptr) {
     std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;
     	return false;
