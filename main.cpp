@@ -18,6 +18,10 @@ void eatFood() {
 }
 
 
+// Background music
+Mix_Music* backgroundMusic = nullptr;
+
+
 // Ekran boyutları
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -72,6 +76,23 @@ void createFood() {
 
 // Oyunun başlatılması
 bool init() {
+
+	// Initialize SDL Mixer library
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+	    std::cerr << "Mix_OpenAudio Error: " << Mix_GetError() << std::endl;
+	    return false;
+	}
+
+    // Load the background music file
+    backgroundMusic = Mix_LoadMUS("background.wav");
+    if (backgroundMusic == nullptr) {
+    std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;
+    	return false;
+    }
+
+
+
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
         return false;
@@ -197,6 +218,12 @@ void handleInput() {
 
 // Oyun döngüsü
 void gameLoop() {
+
+	// Start playing the background music
+	if (Mix_PlayMusic(backgroundMusic, -1) < 0) {
+	    std::cerr << "Mix_PlayMusic Error: " << Mix_GetError() << std::endl;
+	}
+
     srand(time(nullptr));
 
     eatSound = Mix_LoadWAV("eat.wav");
@@ -230,6 +257,8 @@ void gameLoop() {
 
 // Oyunun sonlandırılması
 void quit() {
+    Mix_FreeMusic(backgroundMusic);
+    Mix_CloseAudio();	
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
